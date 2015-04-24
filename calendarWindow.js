@@ -4,7 +4,7 @@
  * Call calendarUtil.monthWindow(2044,01) -- Returns the 42 cells for the 2044 January calendar view/window.
  * @author Ted Johnson
  */
-var calendarUtil = (function ()
+var calendarWindow = (function ()
 {
     "use strict";
     var leap = { markers: [0,7,38,67,98,128,159,189,220,251,281,312,342], days: [25,26,27,28,29,30,31,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5,6,7,8,9,10] },
@@ -29,13 +29,16 @@ var calendarUtil = (function ()
 				) 
 				% 7;
         },
+        checkParameters = function(year, month, day)
+    	{
+    		//Year is greater than 0, month is between 1 and 12, and day is between 1 and 31.
+    		return year && year > 0 && month && month > 0 && month < 13 && (arguments.length < 3 || (day && day > 0 && day < 32));
+    	},
         dayOfWeek = function(year, month, day) {
         	//Check parameters
-		    return determineDayOfWeek(year, month, day, isLeapYear(year) ? leap : normal);
+		    return checkParameters(year, month, day) ? determineDayOfWeek(year, month, day, isLeapYear(year) ? leap : normal) : undefined;
         },
         monthWindow = function(year, month) {
-        	//Check parameters
-        	
         	var yearData = isLeapYear(year) ? leap : normal,
         	    day = determineDayOfWeek(year, month, 1, yearData),
         	    markerPoint = yearData.markers[month] - (day || 7);
@@ -44,10 +47,17 @@ var calendarUtil = (function ()
     		//http://jsperf.com/new-array-vs-splice-vs-slice/19
     		//slice seems very fast, lets us that.
     		return yearData.days.slice(markerPoint, markerPoint+42);
-    	}; 
+    	};
+    	
     return {
-    	monthWindow: monthWindow,
-    	dayOfWeek: dayOfWeek,
-    	isLeapYear : isLeapYear
+    	monthWindow: function (year, month) { 
+    		return checkParameters(year, month) ? monthWindow(year, month) : undefined; 
+    		},
+    	dayOfWeek: function (year, month) { 
+    		return checkParameters(year, month, day) ? dayOfWeek(year, month, day) : undefined; 
+    		},
+    	isLeapYear : function (year, month) { 
+    		return (year && year > 0) ? isLeapYear(year) : undefined; 
+    		}
     };
 }());
