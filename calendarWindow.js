@@ -19,7 +19,7 @@ var calendarWindow = (function ()
 			return (
 				year * 365
 				+ (year % 4 ? 1 : 0)
-				+ Math.floor(year/4) 
+				+ Math.floor(year/4)
 				- Math.floor(year/100) 
 				+ Math.floor(year/400) 
 				+ yearData.markers[month] 
