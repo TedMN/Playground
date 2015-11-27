@@ -45,7 +45,7 @@ var calendarWindow = (function ()
 			
 			//http://stackoverflow.com/questions/3978492/javascript-fastest-way-to-duplicate-an-array-slice-vs-for-loop
     		//http://jsperf.com/new-array-vs-splice-vs-slice/19
-    		//slice seems very fast, lets us that.
+    		//slice seems very fast, lets use that.
     		return yearData.days.slice(markerPoint, markerPoint+42);
     	};
     	
